@@ -2,13 +2,15 @@ package com.task02;
 
 import com.amazonaws.services.lambda.runtime.Context;
 import com.amazonaws.services.lambda.runtime.RequestHandler;
+import com.amazonaws.services.lambda.runtime.events.APIGatewayV2HTTPEvent;
+import com.amazonaws.services.lambda.runtime.events.APIGatewayV2HTTPResponse;
 import com.syndicate.deployment.annotations.lambda.LambdaHandler;
 import com.syndicate.deployment.model.RetentionSetting;
 import com.syndicate.deployment.annotations.lambda.LambdaUrlConfig;
 import com.syndicate.deployment.model.lambda.url.AuthType;
 import com.syndicate.deployment.model.lambda.url.InvokeMode;
-import com.amazonaws.services.lambda.runtime.events.APIGatewayProxyRequestEvent;
-import com.amazonaws.services.lambda.runtime.events.APIGatewayProxyResponseEvent;
+//import com.amazonaws.services.lambda.runtime.events.APIGatewayProxyRequestEvent;
+//import com.amazonaws.services.lambda.runtime.events.APIGatewayProxyResponseEvent;
 
 
 import java.util.HashMap;
@@ -25,17 +27,17 @@ import java.util.Map;
 		authType = AuthType.NONE,
 		invokeMode = InvokeMode.BUFFERED
 )
-public class HelloWorld implements RequestHandler<APIGatewayProxyRequestEvent, APIGatewayProxyResponseEvent> {
+public class HelloWorld implements RequestHandler<APIGatewayV2HTTPEvent, APIGatewayV2HTTPResponse> {
 
-	public APIGatewayProxyResponseEvent handleRequest(APIGatewayProxyRequestEvent request, Context context) {
-		context.getLogger().log(request.toString());
+	public APIGatewayV2HTTPResponse handleRequest(APIGatewayV2HTTPEvent input, Context context) {
+		context.getLogger().log(input.toString());
 		context.getLogger().log(context.toString());
-		APIGatewayProxyResponseEvent response = new APIGatewayProxyResponseEvent();
+		APIGatewayV2HTTPResponse response = new APIGatewayV2HTTPResponse();
 		Map<String, String> headers = new HashMap<>();
 		headers.put("Content-Type", "application/json");
 
-		String path = request.getPath();
-		String httpMethod = request.getHttpMethod();
+		String path = input.getRawPath();
+		String httpMethod = input.getRequestContext().getHttp().getMethod();
 
 		if ("/hello".equals(path)) {
 			response.setStatusCode(200);
