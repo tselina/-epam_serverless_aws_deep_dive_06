@@ -2,3 +2,6 @@
 logs/
 .syndicate-config-*/
 .idea/
+.idea/*
+target/
+target/*
