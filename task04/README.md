@@ -14,14 +14,14 @@ syndicate generate config --name "dev" `
     --secret_key "" `
     --session_token ""
 [System.Environment]::SetEnvironmentVariable('SDCT_CONF', 'C:\projects\serverless\aws\epam_serverless_aws_deep_dive_06\task04\.syndicate-config-dev', [System.EnvironmentVariableTarget]::Process)
+```
+
+# SQS Queue
+```shell
 syndicate generate lambda `
     --name sqs_handler `
     --runtime java
-syndicate generate lambda `
-    --name sns_handler `
-    --runtime java
 
-# SQS Queue
 syndicate generate meta sqs_queue `
     --resource_name async_queue `
     --fifo_queue false `
@@ -61,7 +61,7 @@ Add
 ```
 to [deployment_resources.json](deployment_resources.json) within "lambda-basic-execution"."policy_content"."Statement"."Action"
 
-Add "AWSLambdaSQSQueueExecutionRole" to "sns_handler-role"."predefined_policies" in [deployment_resources.json](deployment_resources.json)
+Add "AWSLambdaSQSQueueExecutionRole" to "sqs_handler-role"."predefined_policies" in [deployment_resources.json](deployment_resources.json)
 
 Add
 ```json lines
@@ -74,6 +74,36 @@ Add
 ```
 to "async_queue" in [deployment_resources.json](deployment_resources.json)
 
+
+# SNS Topic
+```shell
+syndicate generate lambda `
+    --name sns_handler `
+    --runtime java
+syndicate generate meta sns_topic `
+    --resource_name lambda_topic `
+    --region eu-central-1
+```
+
+Add
+```json
+"sns:*"
+```
+to [deployment_resources.json](deployment_resources.json) within "lambda-basic-execution"."policy_content"."Statement"."Action"
+
+Add "AmazonSNSRole" to "sns_handler-role"."predefined_policies" in [deployment_resources.json](deployment_resources.json)
+
+Add
+```json lines
+    "dependencies": [
+      {
+        "resource_name": "sns_handler-role",
+        "resource_type": "iam_role"
+      }
+    ]
+```
+to "lambda_topic" in [deployment_resources.json](deployment_resources.json)
+
 ```shell
 syndicate create_deploy_target_bucket
 syndicate build
@@ -81,5 +111,4 @@ syndicate deploy
 
 syndicate build
 syndicate update --update_only_types lambda
-
 ```
