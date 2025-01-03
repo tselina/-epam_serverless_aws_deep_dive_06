@@ -47,20 +47,22 @@ public class ApiHandler implements RequestHandler<APIGatewayV2HTTPEvent, APIGate
 			context.getLogger().log("Request body: " + request.getBody());
 			Request inputBody = objectMapper.readValue(request.getBody(), Request.class);
 			Integer principalId = inputBody.getPrincipalId();
+			context.getLogger().log("Request principalId: " + principalId);
 			Map<String, String> content = inputBody.getContent();
+			context.getLogger().log("Request content: " + content);
 
 			String uuid = UUID.randomUUID().toString();
 			String createdAt = DateTimeFormatter.ISO_OFFSET_DATE_TIME.format(ZonedDateTime.now());
 
-			Map<String, AttributeValue> item = new HashMap<>();
-			item.put("id", AttributeValue.builder().s(uuid).build());
-			item.put("principalId", AttributeValue.builder().n(String.valueOf(principalId)).build());
-			item.put("createdAt", AttributeValue.builder().s(createdAt).build());
-			item.put("body", AttributeValue.builder().m(mapStringToAttributeValue(content)).build());
+			Map<String, AttributeValue> event = new HashMap<>();
+			event.put("id", AttributeValue.builder().s(uuid).build());
+			event.put("principalId", AttributeValue.builder().n(String.valueOf(principalId)).build());
+			event.put("createdAt", AttributeValue.builder().s(createdAt).build());
+			event.put("body", AttributeValue.builder().m(mapStringToAttributeValue(content)).build());
 
 			PutItemRequest putItemRequest = PutItemRequest.builder()
 					.tableName(System.getenv("target_table"))
-					.item(item)
+					.item(event)
 					.build();
 			dynamoDb.putItem(putItemRequest);
 
