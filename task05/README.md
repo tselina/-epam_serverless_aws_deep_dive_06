@@ -42,7 +42,7 @@ syndicate generate meta api_gateway_resource_method	`
     
 syndicate generate meta dynamodb `
     --resource_name Events `
-    --hash_key_name principalId `
+    --hash_key_name id `
     --hash_key_type N `
     --read_capacity 1 `
     --write_capacity 1
