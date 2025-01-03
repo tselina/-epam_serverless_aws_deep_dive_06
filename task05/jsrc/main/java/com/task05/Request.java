@@ -11,6 +11,6 @@ import java.util.Map;
 @AllArgsConstructor
 @Data
 public class Request {
-    private final Integer principalId;
-    private final Map<String, String> content;
+    private Integer principalId;
+    private Map<String, String> content;
 }
