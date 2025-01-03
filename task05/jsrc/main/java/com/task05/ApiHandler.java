@@ -53,7 +53,7 @@ public class ApiHandler implements RequestHandler<APIGatewayV2HTTPEvent, APIGate
 			context.getLogger().log("Request content: " + content);
 
 			String uuid = UUID.randomUUID().toString();
-			String createdAt = DateTimeFormatter.ISO_OFFSET_DATE_TIME.format(ZonedDateTime.now());
+			String createdAt = DateTimeFormatter.ISO_INSTANT.format(ZonedDateTime.now());
 
 			Map<String, AttributeValue> event = new HashMap<>();
 			event.put("id", AttributeValue.builder().s(uuid).build());
