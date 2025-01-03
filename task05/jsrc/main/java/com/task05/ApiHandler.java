@@ -43,6 +43,7 @@ public class ApiHandler implements RequestHandler<APIGatewayV2HTTPEvent, APIGate
 
 	public APIGatewayV2HTTPResponse handleRequest(APIGatewayV2HTTPEvent request, Context context) {
 		try {
+			context.getLogger().log("Events table: " + System.getenv("target_table"));
 			context.getLogger().log("Full request: " + request.toString());
 			context.getLogger().log("Request body: " + request.getBody());
 			Request inputBody = objectMapper.readValue(request.getBody(), Request.class);
