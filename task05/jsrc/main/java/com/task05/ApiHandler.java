@@ -23,9 +23,6 @@ import java.time.format.DateTimeFormatter;
 import com.syndicate.deployment.annotations.lambda.LambdaHandler;
 import com.syndicate.deployment.model.RetentionSetting;
 
-import java.util.HashMap;
-import java.util.Map;
-
 @LambdaHandler(
     lambdaName = "api_handler",
 	roleName = "api_handler-role",
@@ -46,6 +43,8 @@ public class ApiHandler implements RequestHandler<APIGatewayV2HTTPEvent, APIGate
 
 	public APIGatewayV2HTTPResponse handleRequest(APIGatewayV2HTTPEvent request, Context context) {
 		try {
+			context.getLogger().log("Full request: " + request.toString());
+			context.getLogger().log("Request body: " + request.getBody());
 			Request inputBody = objectMapper.readValue(request.getBody(), Request.class);
 			Integer principalId = inputBody.getPrincipalId();
 			Map<String, String> content = inputBody.getContent();
