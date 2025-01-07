@@ -15,3 +15,17 @@ syndicate generate config --name "dev" `
     --session_token ""
 [System.Environment]::SetEnvironmentVariable('SDCT_CONF', 'C:\projects\serverless\aws\epam_serverless_aws_deep_dive_06\task07\.syndicate-config-dev', [System.EnvironmentVariableTarget]::Process)
 ```
+
+```shell
+syndicate generate lambda `
+    --name uuid_generator `
+    --runtime java
+    
+syndicate generate meta cloudwatch_event_rule `
+    --resource_name uuid_trigger `
+    --rule_type schedule `
+    --expression "cron(0/1 * * * ? *)"
+    
+syndicate generate meta s3_bucket `
+    --resource_name uuid-storage
+```
