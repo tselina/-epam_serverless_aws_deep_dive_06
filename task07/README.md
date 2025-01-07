@@ -24,7 +24,7 @@ syndicate generate lambda `
 syndicate generate meta cloudwatch_event_rule `
     --resource_name uuid_trigger `
     --rule_type schedule `
-    --expression "cron(0/1 * * * ? *)"
+    --expression "rate(1 minutes)"
     
 syndicate generate meta s3_bucket `
     --resource_name uuid-storage
