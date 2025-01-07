@@ -4,6 +4,8 @@ import com.amazonaws.services.lambda.runtime.Context;
 import com.amazonaws.services.lambda.runtime.RequestHandler;
 //import com.amazonaws.services.lambda.runtime.events.APIGatewayProxyRequestEvent;
 //import com.amazonaws.services.lambda.runtime.events.APIGatewayProxyResponseEvent;
+import com.amazonaws.services.lambda.runtime.events.APIGatewayProxyRequestEvent;
+import com.amazonaws.services.lambda.runtime.events.APIGatewayProxyResponseEvent;
 import com.amazonaws.services.lambda.runtime.events.APIGatewayV2HTTPEvent;
 import com.amazonaws.services.lambda.runtime.events.APIGatewayV2HTTPResponse;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -35,7 +37,8 @@ import com.syndicate.deployment.model.RetentionSetting;
 		@EnvironmentVariable(key = "target_table", value = "${target_table}")
 })
 //public class ApiHandler implements RequestHandler<APIGatewayV2HTTPEvent, APIGatewayV2HTTPResponse> {
-public class ApiHandler implements RequestHandler<Request, APIGatewayV2HTTPResponse> {
+//public class ApiHandler implements RequestHandler<Request, APIGatewayV2HTTPResponse> {
+public class ApiHandler implements RequestHandler<APIGatewayProxyRequestEvent, APIGatewayProxyResponseEvent> {
 
 	private static final DynamoDbClient dynamoDb = DynamoDbClient.builder()
 			.region(Region.of(System.getenv("region"))) // Change region if necessary
@@ -43,14 +46,15 @@ public class ApiHandler implements RequestHandler<Request, APIGatewayV2HTTPRespo
 	private static final ObjectMapper objectMapper = new ObjectMapper();
 
 //	public APIGatewayV2HTTPResponse handleRequest(APIGatewayV2HTTPEvent request, Context context) {
-	public APIGatewayV2HTTPResponse handleRequest(Request request, Context context) {
+//	public APIGatewayV2HTTPResponse handleRequest(Request request, Context context) {
+	public APIGatewayProxyResponseEvent handleRequest(APIGatewayProxyRequestEvent request, Context context) {
 		try {
 			context.getLogger().log("Events table: " + System.getenv("target_table"));
 			context.getLogger().log("Full request: " + request.toString());
-//			context.getLogger().log("Request body: " + request.getBody());
-//			context.getLogger().log("Request body: " + request.getBody());
+			context.getLogger().log("Request body: " + request.getBody());
 //			Request inputBody = objectMapper.readValue(request.getBody(), Request.class);
-			Request inputBody = request;
+//			Request inputBody = request;
+			Request inputBody = objectMapper.readValue(request.getBody(), Request.class);
 			Integer principalId = inputBody.getPrincipalId();
 			context.getLogger().log("Request principalId: " + principalId);
 			Map<String, String> content = inputBody.getContent();
@@ -77,13 +81,13 @@ public class ApiHandler implements RequestHandler<Request, APIGatewayV2HTTPRespo
 			responseBody.put("createdAt", createdAt);
 			responseBody.put("body", content);
 
-			APIGatewayV2HTTPResponse response = new APIGatewayV2HTTPResponse();
+			APIGatewayProxyResponseEvent response = new APIGatewayProxyResponseEvent();
 			response.setStatusCode(201);
 			response.setBody(objectMapper.writeValueAsString(responseBody));
 			return response;
 		} catch (Exception e) {
 			context.getLogger().log("Error: " + e.getMessage());
-			APIGatewayV2HTTPResponse response = new APIGatewayV2HTTPResponse();
+			APIGatewayProxyResponseEvent response = new APIGatewayProxyResponseEvent();
 			response.setStatusCode(500);
 			return response;
 		}
