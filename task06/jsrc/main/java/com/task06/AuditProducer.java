@@ -46,22 +46,27 @@ public class AuditProducer implements RequestHandler<DynamodbEvent, Void> {
 	public Void handleRequest(DynamodbEvent event, Context context) {
 		for (DynamodbEvent.DynamodbStreamRecord record : event.getRecords()) {
 			if (INSERT.equals(record.getEventName()) || MODIFY.equals(record.getEventName())) {
-				processRecord(record);
+				processRecord(record, context);
 			}
 		}		return null;
 	}
 
-	private void processRecord(DynamodbEvent.DynamodbStreamRecord record) {
+	private void processRecord(DynamodbEvent.DynamodbStreamRecord record, Context context) {
+		context.getLogger().log("Stream record is: " + record);
 		var oldItem = record.getDynamodb().getOldImage();
 		var newItem = record.getDynamodb().getNewImage();
+		context.getLogger().log("New item is: " + oldItem);
+		context.getLogger().log("Old item is: " + newItem);
 
 		String itemKey = newItem.get("key").getS();
 		Map<String, AttributeValue> auditItem;
 		if (oldItem == null) {
+			context.getLogger().log("Inserting");
 			Map<String, AttributeValue> newItemValue = Map.of(
 					"key", AttributeValue.builder().s(newItem.get("key").getS()).build(),
-					"value", AttributeValue.builder().s(newItem.get("value").getN()).build()
+					"value", AttributeValue.builder().n(newItem.get("value").getN()).build()
 			);
+			context.getLogger().log("New item value is: " + newItemValue);
 			auditItem = Map.of(
 					"id", AttributeValue.builder().s(UUID.randomUUID().toString()).build(),
 					"itemKey", AttributeValue.builder().s(itemKey).build(),
@@ -69,6 +74,7 @@ public class AuditProducer implements RequestHandler<DynamodbEvent, Void> {
 					"newValue", AttributeValue.builder().m(newItemValue).build()
 			);
 		} else {
+			context.getLogger().log("Modifying");
 			int oldValue = Integer.parseInt(oldItem.get("value").getN());
 			int newValue = Integer.parseInt(newItem.get("value").getN());
 			auditItem = Map.of(
@@ -81,6 +87,7 @@ public class AuditProducer implements RequestHandler<DynamodbEvent, Void> {
 			);
 		}
 
+		context.getLogger().log("AuditItem is:" + auditItem);
 		dynamoDb.putItem(PutItemRequest.builder()
 				.tableName(System.getenv("target_table"))
 				.item(auditItem)
