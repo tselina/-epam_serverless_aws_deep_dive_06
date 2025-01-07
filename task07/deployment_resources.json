@@ -39,7 +39,7 @@
     "resource_type": "cloudwatch_rule",
     "rule_type": "schedule",
     "tags": {},
-    "expression": "rate(1 minutes)"
+    "expression": "rate(1 minute)"
   },
   "uuid-storage": {
     "resource_type": "s3_bucket",
