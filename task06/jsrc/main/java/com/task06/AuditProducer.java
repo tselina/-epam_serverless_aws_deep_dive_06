@@ -55,8 +55,8 @@ public class AuditProducer implements RequestHandler<DynamodbEvent, Void> {
 		context.getLogger().log("Stream record is: " + record);
 		var oldItem = record.getDynamodb().getOldImage();
 		var newItem = record.getDynamodb().getNewImage();
-		context.getLogger().log("New item is: " + oldItem);
-		context.getLogger().log("Old item is: " + newItem);
+		context.getLogger().log("Old item is: " + oldItem);
+		context.getLogger().log("New item is: " + newItem);
 
 		String itemKey = newItem.get("key").getS();
 		Map<String, AttributeValue> auditItem;
