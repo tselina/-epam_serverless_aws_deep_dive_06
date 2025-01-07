@@ -34,19 +34,23 @@ import com.syndicate.deployment.model.RetentionSetting;
 		@EnvironmentVariable(key = "region", value = "${region}"),
 		@EnvironmentVariable(key = "target_table", value = "${target_table}")
 })
-public class ApiHandler implements RequestHandler<APIGatewayV2HTTPEvent, APIGatewayV2HTTPResponse> {
+//public class ApiHandler implements RequestHandler<APIGatewayV2HTTPEvent, APIGatewayV2HTTPResponse> {
+public class ApiHandler implements RequestHandler<Request, APIGatewayV2HTTPResponse> {
 
 	private static final DynamoDbClient dynamoDb = DynamoDbClient.builder()
 			.region(Region.of(System.getenv("region"))) // Change region if necessary
 			.build();
 	private static final ObjectMapper objectMapper = new ObjectMapper();
 
-	public APIGatewayV2HTTPResponse handleRequest(APIGatewayV2HTTPEvent request, Context context) {
+//	public APIGatewayV2HTTPResponse handleRequest(APIGatewayV2HTTPEvent request, Context context) {
+	public APIGatewayV2HTTPResponse handleRequest(Request request, Context context) {
 		try {
 			context.getLogger().log("Events table: " + System.getenv("target_table"));
 			context.getLogger().log("Full request: " + request.toString());
-			context.getLogger().log("Request body: " + request.getBody());
-			Request inputBody = objectMapper.readValue(request.getBody(), Request.class);
+//			context.getLogger().log("Request body: " + request.getBody());
+//			context.getLogger().log("Request body: " + request.getBody());
+//			Request inputBody = objectMapper.readValue(request.getBody(), Request.class);
+			Request inputBody = request;
 			Integer principalId = inputBody.getPrincipalId();
 			context.getLogger().log("Request principalId: " + principalId);
 			Map<String, String> content = inputBody.getContent();
