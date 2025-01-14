@@ -51,7 +51,7 @@ public class Processor implements RequestHandler<Object, Map<String, Object>> {
 	private static final HttpClient httpClient = HttpClient.newHttpClient();
 
 	public Map<String, Object> handleRequest(Object request, Context context) {
-        HttpRequest httpRequest = null;
+        HttpRequest httpRequest;
         try {
             httpRequest = HttpRequest.newBuilder()
                     .GET()
