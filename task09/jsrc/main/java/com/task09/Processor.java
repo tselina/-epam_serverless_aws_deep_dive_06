@@ -55,7 +55,7 @@ public class Processor implements RequestHandler<Object, Map<String, Object>> {
 			context.getLogger().log(httpResponse.body());
 
 			Item item = new Item()
-					.withPrimaryKey("id", UUID.randomUUID().toString())
+					.withString("id", UUID.randomUUID().toString())
 					.withJSON("forecast", httpResponse.body());
 
 			Table table = dynamo.getTable(System.getenv("target_table"));
@@ -65,7 +65,7 @@ public class Processor implements RequestHandler<Object, Map<String, Object>> {
 		} catch (URISyntaxException | IOException | InterruptedException e) {
 			throw new RuntimeException(e);
 		}
-		Map<String, Object> resultMap = new HashMap<String, Object>();
+		Map<String, Object> resultMap = new HashMap<>();
 		resultMap.put("statusCode", 200);
 		resultMap.put("body", "Hello from Lambda");
 		return resultMap;
