@@ -7,6 +7,8 @@ import com.amazonaws.services.dynamodbv2.document.PutItemOutcome;
 import com.amazonaws.services.dynamodbv2.document.Table;
 import com.amazonaws.services.lambda.runtime.Context;
 import com.amazonaws.services.lambda.runtime.RequestHandler;
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 import com.syndicate.deployment.annotations.environment.EnvironmentVariable;
 import com.syndicate.deployment.annotations.environment.EnvironmentVariables;
 import com.syndicate.deployment.annotations.lambda.LambdaHandler;
@@ -44,6 +46,8 @@ import java.util.UUID;
 )
 public class Processor implements RequestHandler<Object, Map<String, Object>> {
 
+	private static final Gson gson = new Gson();
+
 	private static final String WEATHER_URL = "https://api.open-meteo.com/v1/forecast?latitude=52.52&longitude=13.41&current=temperature_2m,wind_speed_10m&hourly=temperature_2m,relative_humidity_2m,wind_speed_10m";
 
 	private static final DynamoDB dynamo = new DynamoDB(AmazonDynamoDBClientBuilder.defaultClient());
@@ -59,6 +63,14 @@ public class Processor implements RequestHandler<Object, Map<String, Object>> {
                     .build();
 			HttpResponse<String> httpResponse = httpClient.send(httpRequest, HttpResponse.BodyHandlers.ofString());
 			context.getLogger().log(httpResponse.body());
+
+			Map<String, Object> forecast = gson.fromJson(httpResponse.body(), new TypeToken<>(){});
+			forecast.remove("current_units");
+			forecast.remove("current");
+			((Map<String, Object>) forecast.get("hourly_units")).remove("relative_humidity_2m");
+			((Map<String, Object>) forecast.get("hourly_units")).remove("wind_speed_10m");
+			((Map<String, Object>) forecast.get("hourly")).remove("relative_humidity_2m");
+			((Map<String, Object>) forecast.get("hourly")).remove("wind_speed_10m");
 
 			Item item = new Item()
 					.withString("id", UUID.randomUUID().toString())
