@@ -6,6 +6,7 @@ import com.amazonaws.services.dynamodbv2.document.Item;
 import com.amazonaws.services.dynamodbv2.document.PutItemOutcome;
 import com.amazonaws.services.dynamodbv2.document.Table;
 import com.amazonaws.services.lambda.runtime.Context;
+import com.amazonaws.services.lambda.runtime.LambdaLogger;
 import com.amazonaws.services.lambda.runtime.RequestHandler;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
@@ -55,6 +56,7 @@ public class Processor implements RequestHandler<Object, Map<String, Object>> {
 	private static final HttpClient httpClient = HttpClient.newHttpClient();
 
 	public Map<String, Object> handleRequest(Object request, Context context) {
+		LambdaLogger logger = context.getLogger();
         HttpRequest httpRequest;
         try {
             httpRequest = HttpRequest.newBuilder()
@@ -62,23 +64,25 @@ public class Processor implements RequestHandler<Object, Map<String, Object>> {
                     .uri(new URI(WEATHER_URL))
                     .build();
 			HttpResponse<String> httpResponse = httpClient.send(httpRequest, HttpResponse.BodyHandlers.ofString());
-			context.getLogger().log(httpResponse.body());
+			logger.log(httpResponse.body());
 
 			Map<String, Object> forecast = gson.fromJson(httpResponse.body(), new TypeToken<>(){});
 			forecast.remove("current_units");
 			forecast.remove("current");
-			((Map<String, Object>) forecast.get("hourly_units")).remove("relative_humidity_2m");
-			((Map<String, Object>) forecast.get("hourly_units")).remove("wind_speed_10m");
 			((Map<String, Object>) forecast.get("hourly")).remove("relative_humidity_2m");
 			((Map<String, Object>) forecast.get("hourly")).remove("wind_speed_10m");
-
+			((Map<String, Object>) forecast.get("hourly_units")).remove("relative_humidity_2m");
+			((Map<String, Object>) forecast.get("hourly_units")).remove("wind_speed_10m");
+			logger.log("hourly_units: " + forecast.get("hourly_units").toString());
+			logger.log("hourly: " + forecast.get("hourly_units").toString());
+			logger.log("forecast after modifications: " + forecast);
 			Item item = new Item()
 					.withString("id", UUID.randomUUID().toString())
-					.withJSON("forecast", httpResponse.body());
+					.withMap("forecast", forecast);
 
 			Table table = dynamo.getTable(System.getenv("target_table"));
 			PutItemOutcome putItemOutcome = table.putItem(item);
-			context.getLogger().log("Outcome is: " + putItemOutcome.toString());
+			logger.log("Outcome is: " + putItemOutcome.toString());
 
 		} catch (URISyntaxException | IOException | InterruptedException e) {
 			throw new RuntimeException(e);
