@@ -10,8 +10,11 @@ import com.amazonaws.services.lambda.runtime.RequestHandler;
 import com.syndicate.deployment.annotations.environment.EnvironmentVariable;
 import com.syndicate.deployment.annotations.environment.EnvironmentVariables;
 import com.syndicate.deployment.annotations.lambda.LambdaHandler;
+import com.syndicate.deployment.annotations.lambda.LambdaUrlConfig;
 import com.syndicate.deployment.model.RetentionSetting;
 import com.syndicate.deployment.model.TracingMode;
+import com.syndicate.deployment.model.lambda.url.AuthType;
+import com.syndicate.deployment.model.lambda.url.InvokeMode;
 
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -35,7 +38,10 @@ import java.util.UUID;
 		@EnvironmentVariable(key = "region", value = "${region}"),
 		@EnvironmentVariable(key = "target_table", value = "${target_table}")
 })
-
+@LambdaUrlConfig(
+		authType = AuthType.NONE,
+		invokeMode = InvokeMode.BUFFERED
+)
 public class Processor implements RequestHandler<Object, Map<String, Object>> {
 
 	private static final String WEATHER_URL = "https://api.open-meteo.com/v1/forecast?latitude=52.52&longitude=13.41&current=temperature_2m,wind_speed_10m&hourly=temperature_2m,relative_humidity_2m,wind_speed_10m";
