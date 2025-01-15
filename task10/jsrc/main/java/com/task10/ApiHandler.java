@@ -8,7 +8,9 @@ import com.amazonaws.services.lambda.runtime.events.APIGatewayProxyResponseEvent
 import com.syndicate.deployment.annotations.environment.EnvironmentVariable;
 import com.syndicate.deployment.annotations.environment.EnvironmentVariables;
 import com.syndicate.deployment.annotations.lambda.LambdaHandler;
+import com.syndicate.deployment.annotations.resources.DependsOn;
 import com.syndicate.deployment.model.DeploymentRuntime;
+import com.syndicate.deployment.model.ResourceType;
 import com.syndicate.deployment.model.RetentionSetting;
 import com.task10.dto.RouteKey;
 import com.task10.handler.GetRootHandler;
@@ -32,6 +34,7 @@ import static com.syndicate.deployment.model.environment.ValueTransformer.USER_P
 	aliasName = "${lambdas_alias_name}",
 	logsExpiration = RetentionSetting.SYNDICATE_ALIASES_SPECIFIED
 )
+@DependsOn(resourceType = ResourceType.COGNITO_USER_POOL, name = "${booking_userpool}")
 @EnvironmentVariables(value = {
 		@EnvironmentVariable(key = "region", value = "${region}"),
 		@EnvironmentVariable(key = "tables_table", value = "${tables_table}"),
