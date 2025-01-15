@@ -29,7 +29,9 @@ public class PostTableHandler  implements RequestHandler<APIGatewayProxyRequestE
 
     @Override
     public APIGatewayProxyResponseEvent handleRequest(APIGatewayProxyRequestEvent requestEvent, Context context) {
+        context.getLogger().log("Table info: " + requestEvent.getBody());
         Table newTable = Table.fromJson(requestEvent.getBody());
+        context.getLogger().log("Parsed Table info: " + newTable);
         table.putItem(newTable);
         return new APIGatewayProxyResponseEvent()
                 .withStatusCode(200)
