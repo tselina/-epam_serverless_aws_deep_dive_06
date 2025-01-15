@@ -54,15 +54,16 @@ public class ApiHandler implements RequestHandler<APIGatewayProxyRequestEvent, A
 		this.routeNotImplementedHandler = new RouteNotImplementedHandler();
 	}
 
-	public APIGatewayProxyResponseEvent handleRequest(APIGatewayProxyRequestEvent  requestEvent, Context context) {
+	public APIGatewayProxyResponseEvent handleRequest(APIGatewayProxyRequestEvent requestEvent, Context context) {
 		LambdaLogger logger = context.getLogger();
-		logger.log("COGNITO_ID: " + System.getenv("COGNITO_ID"));
-		logger.log("CLIENT_ID: " + System.getenv("CLIENT_ID"));
-		logger.log("Request: " + requestEvent);
+		logger.log("ApiHandler COGNITO_ID: " + System.getenv("COGNITO_ID"));
+		logger.log("ApiHandler CLIENT_ID: " + System.getenv("CLIENT_ID"));
+		logger.log("ApiHandler Request: " + requestEvent);
+
 		APIGatewayProxyResponseEvent response = getHandler(requestEvent)
 				.handleRequest(requestEvent, context)
 				.withHeaders(headersForCORS);
-		logger.log("Response: " + response);
+		logger.log("ApiHandler Response: " + response);
 		return response;
 	}
 

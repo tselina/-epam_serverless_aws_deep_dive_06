@@ -26,8 +26,8 @@ import java.util.Map;
  */
 public abstract class CognitoSupport {
 
-    private final String userPoolId = System.getenv("COGNITO_ID");
-    private final String clientId = System.getenv("CLIENT_ID");
+    protected final String userPoolId = System.getenv("COGNITO_ID");
+    protected final String clientId = System.getenv("CLIENT_ID");
     private final CognitoIdentityProviderClient cognitoClient;
 
     protected CognitoSupport(CognitoIdentityProviderClient cognitoClient) {

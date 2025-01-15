@@ -16,6 +16,7 @@
 package com.task10.handler;
 
 import com.amazonaws.services.lambda.runtime.Context;
+import com.amazonaws.services.lambda.runtime.LambdaLogger;
 import com.amazonaws.services.lambda.runtime.RequestHandler;
 import com.amazonaws.services.lambda.runtime.events.APIGatewayProxyRequestEvent;
 import com.amazonaws.services.lambda.runtime.events.APIGatewayProxyResponseEvent;
@@ -34,6 +35,10 @@ public class PostSignInHandler extends CognitoSupport implements RequestHandler<
 
     @Override
     public APIGatewayProxyResponseEvent handleRequest(APIGatewayProxyRequestEvent requestEvent, Context context) {
+        LambdaLogger logger = context.getLogger();
+        logger.log("PostSignUpHandler COGNITO_ID: " + System.getenv("COGNITO_ID"));
+        logger.log("PostSignUpHandler CLIENT_ID: " + System.getenv("CLIENT_ID"));
+
         try {
             SignIn signIn = SignIn.fromJson(requestEvent.getBody());
 
