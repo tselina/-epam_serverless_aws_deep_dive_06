@@ -19,7 +19,7 @@ import com.amazonaws.services.lambda.runtime.Context;
 import com.amazonaws.services.lambda.runtime.RequestHandler;
 import com.amazonaws.services.lambda.runtime.events.APIGatewayProxyRequestEvent;
 import com.amazonaws.services.lambda.runtime.events.APIGatewayProxyResponseEvent;
-import com.demoapigatewaycognito.dto.SignIn;
+import com.task10.dto.SignIn;
 import org.json.JSONObject;
 import software.amazon.awssdk.services.cognitoidentityprovider.CognitoIdentityProviderClient;
 
@@ -37,7 +37,7 @@ public class PostSignInHandler extends CognitoSupport implements RequestHandler<
         try {
             SignIn signIn = SignIn.fromJson(requestEvent.getBody());
 
-            String accessToken = cognitoSignIn(signIn.nickName(), signIn.password())
+            String accessToken = cognitoSignIn(signIn.email(), signIn.password())
                     .authenticationResult()
                     .idToken();
 
