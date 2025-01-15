@@ -56,6 +56,8 @@ public class ApiHandler implements RequestHandler<APIGatewayProxyRequestEvent, A
 
 	public APIGatewayProxyResponseEvent handleRequest(APIGatewayProxyRequestEvent  requestEvent, Context context) {
 		LambdaLogger logger = context.getLogger();
+		logger.log("COGNITO_ID: " + System.getenv("COGNITO_ID"));
+		logger.log("CLIENT_ID: " + System.getenv("CLIENT_ID"));
 		logger.log("Request: " + requestEvent);
 		APIGatewayProxyResponseEvent response = getHandler(requestEvent)
 				.handleRequest(requestEvent, context)
