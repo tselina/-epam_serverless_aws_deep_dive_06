@@ -13,10 +13,7 @@ import com.syndicate.deployment.model.DeploymentRuntime;
 import com.syndicate.deployment.model.ResourceType;
 import com.syndicate.deployment.model.RetentionSetting;
 import com.task10.dto.RouteKey;
-import com.task10.handler.GetRootHandler;
-import com.task10.handler.PostSignInHandler;
-import com.task10.handler.PostSignUpHandler;
-import com.task10.handler.RouteNotImplementedHandler;
+import com.task10.handler.*;
 import software.amazon.awssdk.auth.credentials.DefaultCredentialsProvider;
 import software.amazon.awssdk.regions.Region;
 import software.amazon.awssdk.services.cognitoidentityprovider.CognitoIdentityProviderClient;
@@ -59,8 +56,8 @@ public class ApiHandler implements RequestHandler<APIGatewayProxyRequestEvent, A
 
 	public APIGatewayProxyResponseEvent handleRequest(APIGatewayProxyRequestEvent requestEvent, Context context) {
 		LambdaLogger logger = context.getLogger();
-		logger.log("ApiHandler COGNITO_ID: " + System.getenv("COGNITO_ID"));
-		logger.log("ApiHandler CLIENT_ID: " + System.getenv("CLIENT_ID"));
+//		logger.log("ApiHandler COGNITO_ID: " + System.getenv("COGNITO_ID"));
+//		logger.log("ApiHandler CLIENT_ID: " + System.getenv("CLIENT_ID"));
 		logger.log("ApiHandler Request: " + requestEvent);
 
 		APIGatewayProxyResponseEvent response = getHandler(requestEvent)
@@ -89,9 +86,9 @@ public class ApiHandler implements RequestHandler<APIGatewayProxyRequestEvent, A
 		return Map.of(
 				new RouteKey("GET", "/"), new GetRootHandler(),
 				new RouteKey("POST", "/signup"), new PostSignUpHandler(cognitoClient),
-				new RouteKey("POST", "/signin"), new PostSignInHandler(cognitoClient)
+				new RouteKey("POST", "/signin"), new PostSignInHandler(cognitoClient),
+				new RouteKey("POST", "/tables"), new PostTableHandler()
 //				new RouteKey("GET", "/tables"), new GetTablesHandler(),
-//				new RouteKey("POST", "/tables"), new PostTableHandler(),
 //				new RouteKey("GET", "/tables/"), new GetTableHandler(),
 //				new RouteKey("POST", "/reservations "), new PostReservationHandler(),
 //				new RouteKey("GET", "/reservations "), new GetReservationHandler()

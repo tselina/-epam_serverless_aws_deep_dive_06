@@ -2,8 +2,11 @@ package com.task10.dto;
 
 import org.json.JSONException;
 import org.json.JSONObject;
+import software.amazon.awssdk.enhanced.dynamodb.mapper.annotations.DynamoDbBean;
+import software.amazon.awssdk.enhanced.dynamodb.mapper.annotations.DynamoDbPartitionKey;
 
-public record Table(int id, int number, int places, boolean isVip, int minOrder) {
+@DynamoDbBean
+public record Table(@DynamoDbPartitionKey int id, int number, int places, boolean isVip, int minOrder) {
 
     public Table {
         if (id == 0 || number == 0 || places == 0) {
