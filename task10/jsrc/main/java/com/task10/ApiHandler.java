@@ -32,6 +32,8 @@ import static com.syndicate.deployment.model.environment.ValueTransformer.USER_P
 	logsExpiration = RetentionSetting.SYNDICATE_ALIASES_SPECIFIED
 )
 @DependsOn(resourceType = ResourceType.COGNITO_USER_POOL, name = "${booking_userpool}")
+@DependsOn(resourceType = ResourceType.DYNAMODB_TABLE, name = "${tables_table}")
+@DependsOn(resourceType = ResourceType.DYNAMODB_TABLE, name = "${reservations_table}")
 @EnvironmentVariables(value = {
 		@EnvironmentVariable(key = "region", value = "${region}"),
 		@EnvironmentVariable(key = "tables_table", value = "${tables_table}"),
@@ -56,8 +58,8 @@ public class ApiHandler implements RequestHandler<APIGatewayProxyRequestEvent, A
 
 	public APIGatewayProxyResponseEvent handleRequest(APIGatewayProxyRequestEvent requestEvent, Context context) {
 		LambdaLogger logger = context.getLogger();
-//		logger.log("ApiHandler COGNITO_ID: " + System.getenv("COGNITO_ID"));
-//		logger.log("ApiHandler CLIENT_ID: " + System.getenv("CLIENT_ID"));
+		logger.log("ApiHandler COGNITO_ID: " + System.getenv("COGNITO_ID"));
+		logger.log("ApiHandler CLIENT_ID: " + System.getenv("CLIENT_ID"));
 		logger.log("ApiHandler Request: " + requestEvent);
 
 		APIGatewayProxyResponseEvent response = getHandler(requestEvent)

@@ -35,9 +35,9 @@ public class PostSignInHandler extends CognitoSupport implements RequestHandler<
 
     @Override
     public APIGatewayProxyResponseEvent handleRequest(APIGatewayProxyRequestEvent requestEvent, Context context) {
-//        LambdaLogger logger = context.getLogger();
-//        logger.log("PostSignUpHandler COGNITO_ID: " + System.getenv("COGNITO_ID"));
-//        logger.log("PostSignUpHandler CLIENT_ID: " + System.getenv("CLIENT_ID"));
+        LambdaLogger logger = context.getLogger();
+        logger.log("PostSignUpHandler COGNITO_ID: " + System.getenv("COGNITO_ID"));
+        logger.log("PostSignUpHandler CLIENT_ID: " + System.getenv("CLIENT_ID"));
 
         try {
             SignIn signIn = SignIn.fromJson(requestEvent.getBody());
