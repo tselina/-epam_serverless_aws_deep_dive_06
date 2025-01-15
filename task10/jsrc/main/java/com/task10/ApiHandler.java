@@ -1,6 +1,7 @@
 package com.task10;
 
 import com.amazonaws.services.lambda.runtime.Context;
+import com.amazonaws.services.lambda.runtime.LambdaLogger;
 import com.amazonaws.services.lambda.runtime.RequestHandler;
 import com.amazonaws.services.lambda.runtime.events.APIGatewayProxyRequestEvent;
 import com.amazonaws.services.lambda.runtime.events.APIGatewayProxyResponseEvent;
@@ -54,9 +55,13 @@ public class ApiHandler implements RequestHandler<APIGatewayProxyRequestEvent, A
 	}
 
 	public APIGatewayProxyResponseEvent handleRequest(APIGatewayProxyRequestEvent  requestEvent, Context context) {
-		return getHandler(requestEvent)
+		LambdaLogger logger = context.getLogger();
+		logger.log("Request: " + requestEvent);
+		APIGatewayProxyResponseEvent response = getHandler(requestEvent)
 				.handleRequest(requestEvent, context)
 				.withHeaders(headersForCORS);
+		logger.log("Response: " + response);
+		return response;
 	}
 
 	private RequestHandler<APIGatewayProxyRequestEvent, APIGatewayProxyResponseEvent> getHandler(APIGatewayProxyRequestEvent requestEvent) {
