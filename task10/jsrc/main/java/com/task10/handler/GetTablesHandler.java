@@ -4,8 +4,10 @@ import com.amazonaws.services.lambda.runtime.Context;
 import com.amazonaws.services.lambda.runtime.RequestHandler;
 import com.amazonaws.services.lambda.runtime.events.APIGatewayProxyRequestEvent;
 import com.amazonaws.services.lambda.runtime.events.APIGatewayProxyResponseEvent;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.task10.dto.Table;
 import com.task10.dto.Tables;
+import lombok.SneakyThrows;
 import org.json.JSONObject;
 import software.amazon.awssdk.enhanced.dynamodb.DynamoDbEnhancedClient;
 import software.amazon.awssdk.enhanced.dynamodb.DynamoDbTable;
@@ -27,6 +29,7 @@ public class GetTablesHandler implements RequestHandler<APIGatewayProxyRequestEv
 
     private final DynamoDbTable<Table> table = enhancedClient.table(System.getenv("tables_table"), TableSchema.fromBean(Table.class));
 
+    @SneakyThrows
     public APIGatewayProxyResponseEvent handleRequest(APIGatewayProxyRequestEvent requestEvent, Context context) {
         context.getLogger().log("Tables request: " + requestEvent.getBody());
         Tables tables = new Tables();
@@ -34,13 +37,11 @@ public class GetTablesHandler implements RequestHandler<APIGatewayProxyRequestEv
                         .items()
                 .forEach(tables::addTable);
         context.getLogger().log("Return Tables info: " + tables);
+        ObjectMapper mapper = new ObjectMapper();
 
         return new APIGatewayProxyResponseEvent()
                 .withStatusCode(200)
-                .withBody(new JSONObject()
-                        .put("tables", JSONObject.valueToString(tables.getTables()))
-                        .toString()
-                );
+                .withBody(mapper.writeValueAsString(tables.getTables()));
     }
 
 }
