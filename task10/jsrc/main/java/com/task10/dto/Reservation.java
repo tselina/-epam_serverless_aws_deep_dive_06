@@ -1,5 +1,6 @@
 package com.task10.dto;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Data;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -12,6 +13,7 @@ import java.util.UUID;
 @DynamoDbBean
 public class Reservation {
 
+    @JsonIgnore
     private String reservationId;
     private int tableNumber;
     private String clientName;
@@ -20,7 +22,7 @@ public class Reservation {
     private String slotTimeStart;
     private String slotTimeEnd;
 
-
+    // @DynamoDbBean annotation requires existence of Default constructor
     public Reservation() {}
 
     public Reservation(String reservationId, int tableNumber, String clientName, String phoneNumber, String date, String slotTimeStart, String slotTimeEnd) {
@@ -39,6 +41,9 @@ public class Reservation {
 
     @DynamoDbPartitionKey
     public String getReservationId() {
+        if (reservationId == null) {
+            this.reservationId = UUID.randomUUID().toString();
+        }
         return reservationId;
     }
 

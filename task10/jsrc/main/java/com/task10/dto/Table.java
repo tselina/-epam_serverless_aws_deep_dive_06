@@ -16,6 +16,7 @@ public class Table {
     private boolean isVip = false;
     private int minOrder = 0;
 
+    // @DynamoDbBean annotation requires existence of Default constructor
     public Table() {}
 
     @DynamoDbPartitionKey
