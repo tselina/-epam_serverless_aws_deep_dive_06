@@ -18,6 +18,18 @@
         <resources.dir>jsrc/main/resources</resources.dir>
     </properties>
 
+    <dependencyManagement>
+        <dependencies>
+            <dependency>
+                <groupId>software.amazon.awssdk</groupId>
+                <artifactId>bom</artifactId>
+                <version>2.29.44</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
+        </dependencies>
+    </dependencyManagement>
+
     <dependencies>
         <!-- AWS dependencies-->
         <dependency>
@@ -52,7 +64,6 @@
         <dependency>
             <groupId>software.amazon.awssdk</groupId>
             <artifactId>dynamodb-enhanced</artifactId>
-            <version>2.29.52</version>
         </dependency>
         <dependency>
             <groupId>org.json</groupId>
