@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Data;
 import org.json.JSONException;
 import org.json.JSONObject;
+import software.amazon.awssdk.enhanced.dynamodb.mapper.annotations.DynamoDbAttribute;
 import software.amazon.awssdk.enhanced.dynamodb.mapper.annotations.DynamoDbBean;
 import software.amazon.awssdk.enhanced.dynamodb.mapper.annotations.DynamoDbPartitionKey;
 
@@ -40,6 +41,8 @@ public class Reservation {
     }
 
     @DynamoDbPartitionKey
+    @DynamoDbAttribute("id")
+    @JsonIgnore
     public String getReservationId() {
         if (reservationId == null) {
             this.reservationId = UUID.randomUUID().toString();
