@@ -57,6 +57,7 @@ public class Reservations {
                             (
                                 (nrStartTime.isAfter(rStartTime) && nrStartTime.isBefore(rEndTime))
                                         || (nrEndTime.isAfter(rStartTime) && nrEndTime.isBefore(rEndTime))
+                                        || (nrStartTime.isBefore(rStartTime) && nrEndTime.isAfter(rEndTime))
 
                             );
                 } );
