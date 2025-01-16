@@ -74,6 +74,7 @@ public class ApiHandler implements RequestHandler<APIGatewayProxyRequestEvent, A
 	}
 
 	private RouteKey getRouteKey(APIGatewayProxyRequestEvent requestEvent) {
+		System.out.println("Request method: " + requestEvent.getHttpMethod());
 		System.out.println("Request resource: " + requestEvent.getResource());
 		System.out.println("Request path: " + requestEvent.getPath());
 		return new RouteKey(requestEvent.getHttpMethod(), requestEvent.getResource());
@@ -91,11 +92,11 @@ public class ApiHandler implements RequestHandler<APIGatewayProxyRequestEvent, A
 				new RouteKey("GET",  "/"),                 new GetRootHandler(),
 				new RouteKey("POST", "/signup"),           new PostSignUpHandler(cognitoClient),
 				new RouteKey("POST", "/signin"),           new PostSignInHandler(cognitoClient),
-				new RouteKey("POST", "/reservations "),    new PostReservationHandler(),
-				new RouteKey("GET",  "/reservations "),    new GetReservationsHandler(),
 				new RouteKey("POST", "/tables"),           new PostTableHandler(),
 				new RouteKey("GET",  "/tables"),           new GetTablesHandler(),
-				new RouteKey("GET",  "/tables/{tableId}"), new GetTableHandler()
+				new RouteKey("GET",  "/tables/{tableId}"), new GetTableHandler(),
+				new RouteKey("POST", "/reservations"),     new PostReservationHandler(),
+				new RouteKey("GET",  "/reservations"),     new GetReservationsHandler()
 		);
 	}
 
