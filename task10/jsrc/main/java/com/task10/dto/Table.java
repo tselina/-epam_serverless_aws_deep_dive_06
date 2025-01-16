@@ -1,14 +1,29 @@
 package com.task10.dto;
 
+import lombok.Data;
 import org.json.JSONException;
 import org.json.JSONObject;
 import software.amazon.awssdk.enhanced.dynamodb.mapper.annotations.DynamoDbBean;
 import software.amazon.awssdk.enhanced.dynamodb.mapper.annotations.DynamoDbPartitionKey;
 
+@Data
 @DynamoDbBean
-public record Table(@DynamoDbPartitionKey int id, int number, int places, boolean isVip, int minOrder) {
+public class Table {
 
-    public Table {
+    private int id;
+    private int number;
+    private int places;
+    private boolean isVip = false;
+    private int minOrder = 0;
+
+    public Table() {}
+
+    @DynamoDbPartitionKey
+    public int getId() {
+        return id;
+    }
+
+    public Table (int id, int number, int places, boolean isVip, int minOrder) {
         if (id == 0 || number == 0 || places == 0) {
             throw new IllegalArgumentException("Missing or incomplete data.");
         }
