@@ -1,21 +1,51 @@
 package com.task10.dto;
 
+import lombok.Data;
 import org.json.JSONException;
 import org.json.JSONObject;
+import software.amazon.awssdk.enhanced.dynamodb.mapper.annotations.DynamoDbBean;
+import software.amazon.awssdk.enhanced.dynamodb.mapper.annotations.DynamoDbPartitionKey;
 
 import java.util.UUID;
 
-public record Reservation(UUID reservationId, int tableNumber, String clientName, String phoneNumber, String date, String slotTimeStart, String slotTimeEnd) {
-    public Reservation {
+@Data
+@DynamoDbBean
+public class Reservation {
+
+    private String reservationId;
+    private int tableNumber;
+    private String clientName;
+    private String phoneNumber;
+    private String date;
+    private String slotTimeStart;
+    private String slotTimeEnd;
+
+
+    public Reservation() {}
+
+    public Reservation(String reservationId, int tableNumber, String clientName, String phoneNumber, String date, String slotTimeStart, String slotTimeEnd) {
         if (reservationId == null) {
-            reservationId = UUID.randomUUID();
+            this.reservationId = UUID.randomUUID().toString();
+        } else {
+            this.reservationId = reservationId;
         }
+        this.tableNumber = tableNumber;
+        this.clientName = clientName;
+        this.phoneNumber = phoneNumber;
+        this.date = date;
+        this.slotTimeStart = slotTimeStart;
+        this.slotTimeEnd = slotTimeEnd;
+    }
+
+    @DynamoDbPartitionKey
+    public String getReservationId() {
+        return reservationId;
     }
 
     public static Reservation fromJson(JSONObject jsonObject) {
-        UUID reservationId;
+        String reservationId;
         try {
-            reservationId = UUID.fromString(jsonObject.getString("reservationId"));
+            reservationId = jsonObject.getString("reservationId").isEmpty() ? null : jsonObject.getString("reservationId");
         } catch (JSONException e) {
             reservationId = null;
         }
