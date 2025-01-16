@@ -6,6 +6,8 @@ import com.amazonaws.services.lambda.runtime.events.APIGatewayProxyRequestEvent;
 import com.amazonaws.services.lambda.runtime.events.APIGatewayProxyResponseEvent;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.task10.dto.Reservation;
+import com.task10.dto.Reservations;
+import com.task10.dto.Tables;
 import lombok.SneakyThrows;
 import org.json.JSONObject;
 import software.amazon.awssdk.enhanced.dynamodb.DynamoDbEnhancedClient;
@@ -37,6 +39,14 @@ public class PostReservationHandler implements RequestHandler<APIGatewayProxyReq
         Reservation newReservation = mapper.readValue(requestEvent.getBody(), Reservation.class);
 //        Reservation newReservation = Reservation.fromJson(requestEvent.getBody());
         context.getLogger().log("Parsed Reservation info: " + newReservation);
+        if (!Tables.isTableExist(newReservation.getTableNumber())) {
+            return new APIGatewayProxyResponseEvent()
+                    .withStatusCode(400);
+        }
+        if (Reservations.isOverlapping(newReservation)) {
+            return new APIGatewayProxyResponseEvent()
+                    .withStatusCode(400);
+        }
         reservation.putItem(newReservation);
         return new APIGatewayProxyResponseEvent()
                 .withStatusCode(200)

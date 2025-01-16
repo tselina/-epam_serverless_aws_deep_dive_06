@@ -43,4 +43,5 @@ public class GetTablesHandler implements RequestHandler<APIGatewayProxyRequestEv
                 .withBody(mapper.writeValueAsString(tables));
     }
 
+
 }
