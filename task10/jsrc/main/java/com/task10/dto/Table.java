@@ -27,6 +27,11 @@ public class Table {
         if (id == 0 || number == 0 || places == 0) {
             throw new IllegalArgumentException("Missing or incomplete data.");
         }
+        this.id = id;
+        this.number = number;
+        this.places = places;
+        this.isVip = isVip;
+        this.minOrder = minOrder;
     }
 
     public static Table fromJson(JSONObject jsonObject) {
