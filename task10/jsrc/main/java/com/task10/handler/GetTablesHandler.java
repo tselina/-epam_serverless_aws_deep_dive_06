@@ -40,7 +40,7 @@ public class GetTablesHandler implements RequestHandler<APIGatewayProxyRequestEv
 
         return new APIGatewayProxyResponseEvent()
                 .withStatusCode(200)
-                .withBody(mapper.writeValueAsString(tables.getTables()));
+                .withBody(mapper.writeValueAsString(tables));
     }
 
 }

@@ -40,7 +40,7 @@ public class GetReservationsHandler implements RequestHandler<APIGatewayProxyReq
 
         return new APIGatewayProxyResponseEvent()
                 .withStatusCode(200)
-                .withBody(mapper.writeValueAsString(reservations.getReservations()));
+                .withBody(mapper.writeValueAsString(reservations));
     }
 
 }
