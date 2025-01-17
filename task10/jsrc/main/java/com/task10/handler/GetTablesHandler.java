@@ -31,10 +31,7 @@ public class GetTablesHandler implements RequestHandler<APIGatewayProxyRequestEv
     @SneakyThrows
     public APIGatewayProxyResponseEvent handleRequest(APIGatewayProxyRequestEvent requestEvent, Context context) {
         context.getLogger().log("Tables request: list all tables");
-        Tables tables = new Tables();
-        table.scan()
-                        .items()
-                .forEach(tables::addTable);
+        Tables tables= Tables.getTablesFromDb();
         context.getLogger().log("Return Tables info: " + tables);
         ObjectMapper mapper = new ObjectMapper();
 
@@ -42,6 +39,4 @@ public class GetTablesHandler implements RequestHandler<APIGatewayProxyRequestEv
                 .withStatusCode(200)
                 .withBody(mapper.writeValueAsString(tables));
     }
-
-
 }

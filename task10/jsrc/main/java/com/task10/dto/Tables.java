@@ -17,18 +17,18 @@ public class Tables {
 
     // Create a DynamoDbClient
     @JsonIgnore
-    private final DynamoDbClient dbClient = DynamoDbClient.builder()
+    private static final DynamoDbClient dbClient = DynamoDbClient.builder()
             .region(Region.of(System.getenv("region")))
             .build();
 
     // Create an enhanced client
     @JsonIgnore
-    private final DynamoDbEnhancedClient enhancedClient = DynamoDbEnhancedClient.builder()
+    private static final DynamoDbEnhancedClient enhancedClient = DynamoDbEnhancedClient.builder()
             .dynamoDbClient(dbClient)
             .build();
 
     @JsonIgnore
-    private final DynamoDbTable<Table> table = enhancedClient.table(System.getenv("tables_table"), TableSchema.fromBean(Table.class));
+    private static final DynamoDbTable<Table> table = enhancedClient.table(System.getenv("tables_table"), TableSchema.fromBean(Table.class));
 
     @JsonProperty("tables")
     private List<Table> tables = new ArrayList<>();
@@ -37,15 +37,17 @@ public class Tables {
         tables.add(table);
     }
 
-    public List<Table> getTablesFromDb() {
+    public static Tables getTablesFromDb() {
+        List<Table> tablesFromDb = new ArrayList<>();
         table.scan()
                 .items()
-                .forEach(this::addTable);
-        return getTables();
+                .forEach(tablesFromDb::add);
+        Tables currentTables = new Tables();
+        currentTables.setTables(tablesFromDb);
+        return currentTables;
     }
 
     public static boolean doesTableExist(int tableNumber) {
-        Tables tables1 = new Tables();
-        return tables1.getTablesFromDb().stream().anyMatch((Table t) -> t.getNumber() == tableNumber);
+        return Tables.getTablesFromDb().getTables().stream().anyMatch((Table t) -> t.getNumber() == tableNumber);
     }
 }
