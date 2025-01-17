@@ -56,6 +56,7 @@ public class Reservations {
         List<Reservation> reservationList = reservations1.getReservationsFromDb();
         if (reservationList.isEmpty()) return false;
         return reservationList.stream()
+                .filter((Reservation r) -> nr.getTableNumber() == r.getTableNumber())
                 .anyMatch((Reservation r) -> {
                     LocalTime rStartTime = LocalTime.parse(r.getSlotTimeStart());
                     LocalTime rEndTime = LocalTime.parse(r.getSlotTimeEnd());
