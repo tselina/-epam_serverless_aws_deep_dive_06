@@ -44,8 +44,8 @@ public class Tables {
         return getTables();
     }
 
-    public static boolean doesTableExist(int id) {
+    public static boolean doesTableExist(int tableNumber) {
         Tables tables1 = new Tables();
-        return tables1.getTablesFromDb().stream().anyMatch((Table t) -> t.getId() == id);
+        return tables1.getTablesFromDb().stream().anyMatch((Table t) -> t.getNumber() == tableNumber);
     }
 }
