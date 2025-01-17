@@ -39,13 +39,15 @@ public class PostReservationHandler implements RequestHandler<APIGatewayProxyReq
         Reservation newReservation = mapper.readValue(requestEvent.getBody(), Reservation.class);
 //        Reservation newReservation = Reservation.fromJson(requestEvent.getBody());
         context.getLogger().log("Parsed Reservation info: " + newReservation);
-        if (!Tables.isTableExist(newReservation.getTableNumber())) {
+        if (!Tables.doesTableExist(newReservation.getTableNumber())) {
             return new APIGatewayProxyResponseEvent()
-                    .withStatusCode(400);
+                    .withStatusCode(400)
+                    .withBody("{\"message\":\"Table with number " + newReservation.getTableNumber() + " does not exist.\"}");
         }
         if (Reservations.isOverlapping(newReservation)) {
             return new APIGatewayProxyResponseEvent()
-                    .withStatusCode(400);
+                    .withStatusCode(400)
+                    .withBody("{\"message\":\"Reservation overlaps with existing.\"}");
         }
         reservation.putItem(newReservation);
         return new APIGatewayProxyResponseEvent()

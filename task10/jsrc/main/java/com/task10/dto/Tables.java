@@ -1,5 +1,6 @@
 package com.task10.dto;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Data;
 import software.amazon.awssdk.enhanced.dynamodb.DynamoDbEnhancedClient;
@@ -15,15 +16,18 @@ import java.util.List;
 public class Tables {
 
     // Create a DynamoDbClient
+    @JsonIgnore
     private final DynamoDbClient dbClient = DynamoDbClient.builder()
             .region(Region.of(System.getenv("region")))
             .build();
 
     // Create an enhanced client
+    @JsonIgnore
     private final DynamoDbEnhancedClient enhancedClient = DynamoDbEnhancedClient.builder()
             .dynamoDbClient(dbClient)
             .build();
 
+    @JsonIgnore
     private final DynamoDbTable<Table> table = enhancedClient.table(System.getenv("tables_table"), TableSchema.fromBean(Table.class));
 
     @JsonProperty("tables")
@@ -40,7 +44,7 @@ public class Tables {
         return getTables();
     }
 
-    public static boolean isTableExist(int id) {
+    public static boolean doesTableExist(int id) {
         Tables tables1 = new Tables();
         return tables1.getTablesFromDb().stream().anyMatch((Table t) -> t.getId() == id);
     }
