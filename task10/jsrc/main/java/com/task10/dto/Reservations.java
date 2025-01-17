@@ -1,5 +1,6 @@
 package com.task10.dto;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Data;
 import software.amazon.awssdk.enhanced.dynamodb.DynamoDbEnhancedClient;
@@ -13,20 +14,24 @@ import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+import java.util.stream.Stream;
 
 @Data
 public class Reservations {
 
     // Create a DynamoDbClient
+    @JsonIgnore
     private final DynamoDbClient dbClient = DynamoDbClient.builder()
             .region(Region.of(System.getenv("region")))
             .build();
 
     // Create an enhanced client
+    @JsonIgnore
     private final DynamoDbEnhancedClient enhancedClient = DynamoDbEnhancedClient.builder()
             .dynamoDbClient(dbClient)
             .build();
 
+    @JsonIgnore
     private final DynamoDbTable<Reservation> reservation = enhancedClient.table(System.getenv("reservations_table"), TableSchema.fromBean(Reservation.class));
 
     @JsonProperty("reservations")
@@ -48,12 +53,14 @@ public class Reservations {
         LocalTime nrEndTime = LocalTime.parse(nr.getSlotTimeEnd());
 
         Reservations reservations1 = new Reservations();
-        return reservations1.getReservationsFromDb().stream()
+        List<Reservation> reservationList = reservations1.getReservationsFromDb();
+        if (reservationList.isEmpty()) return false;
+        return reservationList.stream()
                 .anyMatch((Reservation r) -> {
                     LocalTime rStartTime = LocalTime.parse(r.getSlotTimeStart());
                     LocalTime rEndTime = LocalTime.parse(r.getSlotTimeEnd());
                     if (!Objects.equals(r.getDate(), nr.getDate())) return false;
                     return  !(nrStartTime.isAfter(rEndTime) && nrEndTime.isBefore(rStartTime));
-                } );
+                });
     }
 }
