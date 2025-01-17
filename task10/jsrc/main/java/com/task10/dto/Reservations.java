@@ -52,14 +52,8 @@ public class Reservations {
                 .anyMatch((Reservation r) -> {
                     LocalTime rStartTime = LocalTime.parse(r.getSlotTimeStart());
                     LocalTime rEndTime = LocalTime.parse(r.getSlotTimeEnd());
-
-                    return Objects.equals(r.getDate(), nr.getDate()) &&
-                            (
-                                (nrStartTime.isAfter(rStartTime) && nrStartTime.isBefore(rEndTime))
-                                        || (nrEndTime.isAfter(rStartTime) && nrEndTime.isBefore(rEndTime))
-                                        || (nrStartTime.isBefore(rStartTime) && nrEndTime.isAfter(rEndTime))
-
-                            );
+                    if (!Objects.equals(r.getDate(), nr.getDate())) return false;
+                    return  !(nrStartTime.isAfter(rEndTime) && nrEndTime.isBefore(rStartTime));
                 } );
     }
 }
