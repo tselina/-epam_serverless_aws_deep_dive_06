@@ -70,7 +70,7 @@
     },
     "tags": {}
   },
-  "task11_api": {
+  "task12_api": {
     "resource_type": "api_gateway",
     "deploy_stage": "api",
     "dependencies": [],
