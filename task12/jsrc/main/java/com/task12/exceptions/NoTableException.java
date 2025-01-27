@@ -1,4 +1,4 @@
-package com.task11.exceptions;
+package com.task12.exceptions;
 
 public class NoTableException extends RuntimeException {
     private final int code = 400;

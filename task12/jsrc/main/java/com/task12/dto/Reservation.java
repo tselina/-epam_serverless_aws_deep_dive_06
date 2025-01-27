@@ -1,4 +1,4 @@
-package com.task11.dto;
+package com.task12.dto;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Data;

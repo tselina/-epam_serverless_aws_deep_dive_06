@@ -1,21 +1,23 @@
-package com.task11.handler;
+package com.task12.handler;
 
 import com.amazonaws.services.lambda.runtime.Context;
 import com.amazonaws.services.lambda.runtime.RequestHandler;
 import com.amazonaws.services.lambda.runtime.events.APIGatewayProxyRequestEvent;
 import com.amazonaws.services.lambda.runtime.events.APIGatewayProxyResponseEvent;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.task11.dto.Table;
-import com.task11.dto.Tables;
+import com.task12.dto.Table;
+import com.task12.dto.Tables;
 import lombok.SneakyThrows;
+import org.json.JSONObject;
 import software.amazon.awssdk.enhanced.dynamodb.DynamoDbEnhancedClient;
 import software.amazon.awssdk.enhanced.dynamodb.DynamoDbTable;
+import software.amazon.awssdk.enhanced.dynamodb.Key;
 import software.amazon.awssdk.enhanced.dynamodb.TableSchema;
+import software.amazon.awssdk.enhanced.dynamodb.model.GetItemEnhancedRequest;
 import software.amazon.awssdk.regions.Region;
 import software.amazon.awssdk.services.dynamodb.DynamoDbClient;
 
-public class GetTablesHandler implements RequestHandler<APIGatewayProxyRequestEvent, APIGatewayProxyResponseEvent> {
-
+public class GetTableHandler implements RequestHandler<APIGatewayProxyRequestEvent, APIGatewayProxyResponseEvent> {
     // Create a DynamoDbClient
     private final DynamoDbClient dbClient = DynamoDbClient.builder()
             .region(Region.of(System.getenv("region")))
@@ -30,13 +32,15 @@ public class GetTablesHandler implements RequestHandler<APIGatewayProxyRequestEv
 
     @SneakyThrows
     public APIGatewayProxyResponseEvent handleRequest(APIGatewayProxyRequestEvent requestEvent, Context context) {
-        context.getLogger().log("Tables request: list all tables");
-        Tables tables= Tables.getTablesFromDb();
-        context.getLogger().log("Return Tables info: " + tables);
+        context.getLogger().log("Tables request: " + requestEvent.getPathParameters());
+        int tableId = Integer.parseInt(requestEvent.getPathParameters().get("tableId"));
+        Key key = Key.builder().partitionValue(tableId).build();
+        Table tableToReturn = table.getItem(key);
+        context.getLogger().log("Return Table info: " + tableToReturn);
         ObjectMapper mapper = new ObjectMapper();
-
         return new APIGatewayProxyResponseEvent()
                 .withStatusCode(200)
-                .withBody(mapper.writeValueAsString(tables));
+                .withBody(mapper.writeValueAsString(tableToReturn));
     }
+
 }
