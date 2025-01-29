@@ -561,6 +561,172 @@
       "Empty": {
         "title": "Empty Schema",
         "type": "object"
+      },
+      "TableId": {
+        "description": "Response with Table ID",
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "example": 1,
+            "description": "Unique ID"
+          }
+        }
+      },
+      "TableList": {
+        "description": "List of Tables",
+        "type": "object",
+        "properties": {
+          "tables": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Table"
+            }
+          }
+        }
+      },
+      "Table": {
+        "description": "Table object",
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "example": 11,
+            "description": "Unique ID"
+          },
+          "number": {
+            "type": "integer",
+            "example": 11,
+            "description": "Table number"
+          },
+          "places": {
+            "type": "integer",
+            "example": 11,
+            "description": "Amount of people table can handle"
+          },
+          "isVip": {
+            "type": "boolean",
+            "example": true,
+            "description": "Is this table in the VIP hall"
+          },
+          "minOrder": {
+            "type": "integer",
+            "example": 11,
+            "description": "Table requires minimum order"
+          }
+        }
+      },
+      "SignUp": {
+        "description": "Sign up object",
+        "type": "object",
+        "properties": {
+          "firstName": {
+            "type": "string",
+            "example": "John",
+            "description": "First name"
+          },
+          "lastName": {
+            "type": "string",
+            "example": "Doe",
+            "description": "Last name"
+          },
+          "email": {
+            "type": "string",
+            "example": "email@email.com",
+            "description": "Email"
+          },
+          "password": {
+            "type": "string",
+            "example": "123!asdfSDF",
+            "description": "12+ alphanumeric password"
+          }
+        }
+      },
+      "SignIn": {
+        "description": "Sign in object",
+        "type": "object",
+        "properties": {
+          "email": {
+            "type": "string",
+            "example": "email@email.com",
+            "description": "Email"
+          },
+          "password": {
+            "type": "string",
+            "example": "123!asdfSDF",
+            "description": "12+ alphanumeric string"
+          }
+        }
+      },
+      "AccessToken": {
+        "description": "Bearer Access token object",
+        "type": "object",
+        "properties": {
+          "accessToken": {
+            "type": "string",
+            "example": "",
+            "description": "Bearer header access token to use for Authorization"
+          }
+        }
+      },
+      "ReservationList": {
+        "description": "List of Reservations",
+        "type": "object",
+        "properties": {
+          "reservations": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Reservation"
+            }
+          }
+        }
+      },
+      "Reservation": {
+        "description": "Reservation object for reserving the table",
+        "type": "object",
+        "properties": {
+          "tableNumber": {
+            "type": "integer",
+            "example": 11,
+            "description": "Table number to reserve"
+          },
+          "clientName": {
+            "type": "string",
+            "example": "John Doe",
+            "description": "Client's name"
+          },
+          "phoneNumber": {
+            "type": "string",
+            "example": "+1234567890",
+            "description": "Client's phone number"
+          },
+          "date": {
+            "type": "string",
+            "example": "2030-12-31",
+            "description": "Reservation date in yyyy-MM-dd format"
+          },
+          "slotTimeStart": {
+            "type": "string",
+            "example": "11:00",
+            "description": "Start of slot time in HH:MM format"
+          },
+          "slotTimeEnd": {
+            "type": "string",
+            "example": "13:00",
+            "description": "End of slot time  in HH:MM format"
+          }
+        }
+      },
+      "ReservationId": {
+        "description": "Response with Reservation ID",
+        "type": "object",
+        "properties": {
+          "reservationId": {
+            "type": "string",
+            "example": "",
+            "description": "Reservation Id"
+          }
+        }
       }
     },
     "securitySchemes": {
